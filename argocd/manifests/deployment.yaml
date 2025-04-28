@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: last-one
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: last-one
+  template:
+    metadata:
+      labels:
+        app: last-one
+    spec:
+      containers:
+        - name: last-one
+          image: bilel06/last-one:latest  
+          ports:
+            - containerPort: 80

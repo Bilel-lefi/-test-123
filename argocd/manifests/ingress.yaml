@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: last-one
+spec:
+  rules:
+  - host: last-one.yourdomain.com  
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: last-one
+            port:
+              number: 80
