@@ -1,7 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: last-one
+  name: my-app-service
+  namespace: default
 spec:
   selector:
     app: last-one
@@ -9,3 +10,4 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
+  type: LoadBalancer
