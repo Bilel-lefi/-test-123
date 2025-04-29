@@ -1,7 +1,44 @@
-stage('Deploy to Kubernetes') {
-    steps {
-        script {
-            sh 'kubectl set image deployment/last-one-deployment last-one=bilel06/last-one:latest'
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = 'bilel06/last-one'
+        DOCKER_CREDENTIALS_ID = 'dockerhub-creds'  // Référence de l'ID des credentials Docker Hub
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'master', url: 'https://github.com/Bilel-lefi/-test-123.git'
+            }
+        }
+
+        stage('Pull Docker Image') {
+            steps {
+                script {
+                    // Récupérer l'image Docker existante
+                    docker.image("${DOCKER_IMAGE}:latest").pull()
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
+                        docker.image("${DOCKER_IMAGE}:latest").push()
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    // Déploiement de l'image Docker dans Kubernetes
+                    sh 'kubectl set image deployment/last-one-deployment last-one=bilel06/last-one:latest'
+                }
+            }
         }
     }
 }
