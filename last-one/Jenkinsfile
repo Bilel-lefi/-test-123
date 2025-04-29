@@ -36,7 +36,7 @@ pipeline {
             steps {
                 script {
                     // Déploiement de l'image Docker dans Kubernetes
-                    bat 'kubectl set image deployment/last-one last-one=bilel06/last-one:latest'
+                    bat 'kubectl set image deployment/last-one last-one=${DOCKER_IMAGE}:latest --kubeconfig ${KUBECONFIG}'
                 }
             }
         }
