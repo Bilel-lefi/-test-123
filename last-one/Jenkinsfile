@@ -15,15 +15,19 @@ pipeline {
 
         stage('Build React App') {
             steps {
-                bat 'npm install'
-                bat 'npm run build'
+                dir('last-one/last-one') {
+                    bat 'npm install'
+                    bat 'npm run build'
+                }
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    docker.build("${DOCKER_IMAGE}:latest", '.')
+                dir('last-one') {
+                    script {
+                        docker.build("${DOCKER_IMAGE}:latest", '.')
+                    }
                 }
             }
         }
