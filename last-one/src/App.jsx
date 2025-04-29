@@ -26,7 +26,8 @@ function App() {
         </p>
       </div>
       <p className="read-the-docs">
-        pfa is done talel aamara a9wa hacker !!!!!!!!!!!!!!!!!!!!!!!
+     
+        <bold>everything ready to fly</bold>
       </p>
     </>
   );
