@@ -7,8 +7,8 @@ spec:
   project: default
   source:
     repoURL: https://github.com/Bilel-lefi/-test-123.git
-    targetRevision: master # ou branche souhaitée
-    path: argocd/manifests # chemin vers les manifests Kubernetes dans ton repo
+    targetRevision: master
+    path: argocd/manifests 
   destination:
     server: https://kubernetes.default.svc
     namespace: default
