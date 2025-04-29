@@ -3,8 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'bilel06/last-one'
-        DOCKER_CREDENTIALS_ID = 'dockerhub-creds'
-        KUBECONFIG = 'C:\\Users\\21628\\.kube\\config'  // Set the Kubeconfig path here
+        DOCKER_CREDENTIALS_ID = 'dockerhub-creds'  // Référence de l'ID des credentials Docker Hub
     }
 
     stages {
@@ -17,6 +16,7 @@ pipeline {
         stage('Pull Docker Image') {
             steps {
                 script {
+                    // Récupérer l'image Docker existante
                     docker.image("${DOCKER_IMAGE}:latest").pull()
                 }
             }
@@ -35,8 +35,8 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    // Deploy the Docker image to Kubernetes using the correct kubeconfig path
-                    bat 'kubectl set image deployment/last-one last-one=${DOCKER_IMAGE}:latest --kubeconfig ${KUBECONFIG}'
+                    // Déploiement de l'image Docker dans Kubernetes
+                    sh 'kubectl set image deployment/last-one-deployment last-one=bilel06/last-one:latest'
                 }
             }
         }
