@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'bilel06/last-one'
-        DOCKER_CREDENTIALS_ID = 'dockerhub-creds'  // Référence de l'ID des credentials Docker Hub
+        DOCKER_CREDENTIALS_ID = 'dockerhub-creds'
     }
 
     stages {
@@ -28,6 +28,16 @@ pipeline {
                     docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
                         docker.image("${DOCKER_IMAGE}:latest").push()
                     }
+                }
+            }
+        }
+                stage('Update redeploy-timestamp') {
+            steps {
+                script {
+                    def timestamp = new Date().format("yyyy-MM-dd'T'HH:mm:ss")
+                    sh """
+                        sed -i 's/redeploy-timestamp: .*/redeploy-timestamp: "${timestamp}"/' manifest/deployment.yaml
+                    """
                 }
             }
         }

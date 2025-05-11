@@ -11,9 +11,11 @@ spec:
     metadata:
       labels:
         app: last-one
+      annotations:
+        redeploy-timestamp: "2025-05-11T00:00:00" # valeur initiale, modifiée automatiquement par Jenkins
     spec:
       containers:
         - name: last-one
-          image: bilel06/last-one:latest  
+          image: bilel06/last-one:latest
           ports:
             - containerPort: 80
