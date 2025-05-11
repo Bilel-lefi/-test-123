@@ -35,8 +35,20 @@ pipeline {
         stage('Update redeploy-timestamp') {
             steps {
                 powershell '''
+                    # Get the current timestamp
                     $timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ss"
+                    Write-Host "Timestamp: $timestamp"
+
+                    # Debug: Read and print the content before update
+                    Write-Host "Before update:"
+                    Get-Content manifest/deployment.yaml
+
+                    # Update redeploy-timestamp
                     (Get-Content manifest/deployment.yaml) -replace 'redeploy-timestamp: ".*"', "redeploy-timestamp: `"$timestamp`"" | Set-Content manifest/deployment.yaml
+
+                    # Debug: Read and print the content after update
+                    Write-Host "After update:"
+                    Get-Content manifest/deployment.yaml
                 '''
             }
         }
