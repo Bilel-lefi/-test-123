@@ -34,29 +34,21 @@ pipeline {
 
         stage('Update redeploy-timestamp') {
             steps {
-                powershell '''
-                    # Obtenir le timestamp actuel au format yyyy-MM-ddTHH:mm:ss
-                    $timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ss"
-                    Write-Host "Timestamp: $timestamp"  # Debugger le timestamp
+                bat '''
+                    @echo off
+                    set timestamp=%DATE%T%TIME%
+                    echo Timestamp: %timestamp%
 
-                    # Vérifier si le fichier existe
-                    $filePath = "last-one/argocd/manifest/deployment.yaml"
-                    if (Test-Path $filePath) {
-                        Write-Host "Fichier trouvé : $filePath"
+                    rem Afficher le contenu avant la mise à jour
+                    echo Before update:
+                    type "argocd/manifest/deployment.yaml"
 
-                        # Lire et afficher le contenu avant la mise à jour
-                        Write-Host "Before update:"
-                        Get-Content $filePath | Write-Host
+                    rem Mettre à jour redeploy-timestamp dans le fichier
+                    powershell -Command "(Get-Content 'argocd/manifest/deployment.yaml') -replace 'redeploy-timestamp: \".*\"', 'redeploy-timestamp: \"%timestamp%\"' | Set-Content 'argocd/manifest/deployment.yaml'"
 
-                        # Mettre à jour redeploy-timestamp avec le timestamp
-                        (Get-Content $filePath) -replace 'redeploy-timestamp: ".*"', "redeploy-timestamp: `"$timestamp`"" | Set-Content $filePath
-
-                        # Lire et afficher le contenu après la mise à jour
-                        Write-Host "After update:"
-                        Get-Content $filePath | Write-Host
-                    } else {
-                        Write-Host "Fichier non trouvé : $filePath"
-                    }
+                    rem Afficher le contenu après la mise à jour
+                    echo After update:
+                    type "argocd/manifest/deployment.yaml"
                 '''
             }
         }
