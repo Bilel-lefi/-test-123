@@ -31,15 +31,14 @@ pipeline {
                 }
             }
         }
-                stage('Update redeploy-timestamp') {
+        stage('Update redeploy-timestamp') {
             steps {
-                script {
-                    def timestamp = new Date().format("yyyy-MM-dd'T'HH:mm:ss")
-                    bat """
-                        sed -i 's/redeploy-timestamp: .*/redeploy-timestamp: "${timestamp}"/' manifest/deployment.yaml
-                    """
-                }
-            }
+                powershell '''
+             $timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ss"
+        (Get-Content manifest/deployment.yaml) -replace 'redeploy-timestamp: ".*"', "redeploy-timestamp: \\"$timestamp\\"" | Set-Content manifest/deployment.yaml
+        '''
+           }
         }
+
     }
 }
