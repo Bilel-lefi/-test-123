@@ -36,19 +36,20 @@ pipeline {
             steps {
                 bat '''
                     @echo off
-                    set timestamp=%DATE%T%TIME%
+                    rem Remplacer les caractères : par des - dans la variable timestamp
+                    set timestamp=%DATE%T%TIME:~0,2%-%TIME:~3,2%-%TIME:~6,2%
                     echo Timestamp: %timestamp%
 
                     rem Afficher le contenu avant la mise à jour
                     echo Before update:
-                    type "argocd/manifests/deployment.yaml"
+                    type "argocd\\manifests\\deployment.yaml"
 
                     rem Mettre à jour redeploy-timestamp dans le fichier
-                    powershell -Command "(Get-Content 'argocd/manifests/deployment.yaml') -replace 'redeploy-timestamp: \".*\"', 'redeploy-timestamp: \"%timestamp%\"' | Set-Content 'argocd/manifests/deployment.yaml'"
+                    powershell -Command "(Get-Content 'argocd\\manifests\\deployment.yaml') -replace 'redeploy-timestamp: \".*\"', 'redeploy-timestamp: \"%timestamp%\"' | Set-Content 'argocd\\manifests\\deployment.yaml'"
 
                     rem Afficher le contenu après la mise à jour
                     echo After update:
-                    type "argocd/manifests/deployment.yaml"
+                    type "argocd\\manifests\\deployment.yaml"
                 '''
             }
         }
