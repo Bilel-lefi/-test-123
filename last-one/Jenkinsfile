@@ -35,7 +35,7 @@ pipeline {
             steps {
                 script {
                     def timestamp = new Date().format("yyyy-MM-dd'T'HH:mm:ss")
-                    sh """
+                    bat """
                         sed -i 's/redeploy-timestamp: .*/redeploy-timestamp: "${timestamp}"/' manifest/deployment.yaml
                     """
                 }
