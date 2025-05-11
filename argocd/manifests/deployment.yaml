@@ -12,7 +12,7 @@ spec:
       labels:
         app: last-one
       annotations:
-        redeploy-timestamp: ".*" # Valeur initiale, modifiée automatiquement par Jenkins
+        redeploy-timestamp: "1970-01-01T00:00:00" # Valeur initiale, modifiée automatiquement par Jenkins
     spec:
       containers:
         - name: last-one
