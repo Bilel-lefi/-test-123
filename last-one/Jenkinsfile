@@ -16,7 +16,7 @@ pipeline {
         stage('Pull Docker Image') {
             steps {
                 script {
-                    // Pull the existing Docker image
+                    // Récupérer l'image Docker existante
                     docker.image("${DOCKER_IMAGE}:latest").pull()
                 }
             }
@@ -35,18 +35,18 @@ pipeline {
         stage('Update redeploy-timestamp') {
             steps {
                 powershell '''
-                    # Get the current timestamp
+                    # Obtenir le timestamp actuel au format yyyy-MM-ddTHH:mm:ss
                     $timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ss"
-                    Write-Host "Timestamp: $timestamp"
+                    Write-Host "Timestamp: $timestamp"  # Afficher le timestamp pour débogage
 
-                    # Debug: Read and print the content before update
+                    # Lire et afficher le contenu avant la mise à jour
                     Write-Host "Before update:"
                     Get-Content manifest/deployment.yaml
 
-                    # Update redeploy-timestamp
+                    # Mettre à jour redeploy-timestamp avec la valeur du timestamp
                     (Get-Content manifest/deployment.yaml) -replace 'redeploy-timestamp: ".*"', "redeploy-timestamp: `"$timestamp`"" | Set-Content manifest/deployment.yaml
 
-                    # Debug: Read and print the content after update
+                    # Lire et afficher le contenu après la mise à jour
                     Write-Host "After update:"
                     Get-Content manifest/deployment.yaml
                 '''
