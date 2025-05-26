@@ -12,7 +12,7 @@ spec:
       labels:
         app: last-one
       annotations:
-        redeploy-timestamp: '2025-05-26T21:02:53'
+        redeploy-timestamp: '2025-05-26T21:03:43'
     spec:
       containers:
         - name: last-one
