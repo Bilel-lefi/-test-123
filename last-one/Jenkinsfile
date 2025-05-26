@@ -46,7 +46,7 @@ pipeline {
                     git config user.name "Jenkins"
                     git add argocd\\manifests\\deployment.yaml
                     git commit -m "Update redeploy-timestamp for redeployment"
-                    git push origin master
+                    git push
                 '''
             }
         }
