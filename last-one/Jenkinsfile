@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'bilel06/last-one'
-        DOCKER_CREDENTIALS_ID = 'dockerhub-creds'  // ID des credentials Docker Hub dans Jenkins
+        DOCKER_CREDENTIALS_ID = 'dockerhub-creds'
     }
 
     stages {
@@ -13,10 +13,11 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Pull Docker Image') {
             steps {
                 script {
-                    docker.build("${DOCKER_IMAGE}:latest")
+                    // Pull the existing Docker image
+                    docker.image("${DOCKER_IMAGE}:latest").pull()
                 }
             }
         }
@@ -35,22 +36,20 @@ pipeline {
             steps {
                 bat '''
                     @echo off
-                    rem Génère un timestamp au format YYYY-MM-DDTHH-MM-SS
-                    for /f "tokens=1-4 delims=/:. " %%a in ("%date% %time%") do (
-                        set timestamp=%%d-%%b-%%cT%%e-%%f-%%g
-                    )
+                    rem Remplacer les caractères : par des - dans la variable timestamp
+                    set timestamp=%DATE%T%TIME:~0,2%-%TIME:~3,2%-%TIME:~6,2%
                     echo Timestamp: %timestamp%
 
-                    rem Affiche avant modification
+                    rem Afficher le contenu avant la mise à jour
                     echo Before update:
-                    type argocd\\manifests\\deployment.yaml
+                    type "argocd\\manifests\\deployment.yaml"
 
-                    rem Met à jour redeploy-timestamp dans deployment.yaml
+                    rem Mettre à jour redeploy-timestamp dans le fichier
                     powershell -Command "(Get-Content 'argocd\\manifests\\deployment.yaml') -replace 'redeploy-timestamp: \".*\"', 'redeploy-timestamp: \"%timestamp%\"' | Set-Content 'argocd\\manifests\\deployment.yaml'"
 
-                    rem Affiche après modification
+                    rem Afficher le contenu après la mise à jour
                     echo After update:
-                    type argocd\\manifests\\deployment.yaml
+                    type "argocd\\manifests\\deployment.yaml"
                 '''
             }
         }
