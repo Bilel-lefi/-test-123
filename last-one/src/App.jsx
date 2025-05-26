@@ -32,7 +32,7 @@ function App() {
           soutien inestimable ses conseils avisés et son accompagnement
           bienveillant tout au long de ce projet .
         </p>
-        <p
+        {/* <p
           style={{
             fontSize: "1.2rem",
             lineHeight: "1.8",
@@ -43,7 +43,7 @@ function App() {
           Je remercie également les membres du <strong>jury</strong> pour
           l'intérêt porté à mon travail et pour leurs remarques pertinentes qui
           m'ont permis de progresser.
-        </p>
+        </p> */}
         <div
           style={{
             textAlign: "right",
