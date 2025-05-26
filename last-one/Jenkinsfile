@@ -42,7 +42,7 @@ pipeline {
 
         stage('Commit and Push Manifest Update') {
             steps {
-                withCredentials([string(credentialsId: 'github-pat', variable: 'GITHUB_TOKEN')]) {
+                withCredentials([string(credentialsId: 'github-pat-token', variable: 'GITHUB_TOKEN')]) {
                     bat '''
                         git config user.email "bilellefi06@gmail.com"
                         git config user.name "bilel"
