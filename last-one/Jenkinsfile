@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'bilel06/last-one'
         DOCKER_CREDENTIALS_ID = 'dockerhub-creds'
+        GIT_USER = 'Bilel-lefi' // Ton nom d'utilisateur GitHub
     }
 
     stages {
@@ -41,13 +42,15 @@ pipeline {
 
         stage('Commit and Push Manifest Update') {
             steps {
-                bat '''
-                    git config user.email "bilellefi06@gmail.com"
-                    git config user.name "bilel"
-                    git add argocd\\manifests\\deployment.yaml
-                    git commit -m "Update redeploy-timestamp for redeployment"
-                    git push origin master
-                '''
+                withCredentials([string(credentialsId: 'github-pat', variable: 'GITHUB_TOKEN')]) {
+                    bat '''
+                        git config user.email "bilellefi06@gmail.com"
+                        git config user.name "bilel"
+                        git add argocd\\manifests\\deployment.yaml
+                        git commit -m "Update redeploy-timestamp for redeployment"
+                        git push https://%GIT_USER%:%GITHUB_TOKEN%@github.com/Bilel-lefi/-test-123.git master
+                    '''
+                }
             }
         }
     }
