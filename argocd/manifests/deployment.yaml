@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: last-one
-          image: bilel06/last-one:57
+          image: bilel06/last-one:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80
