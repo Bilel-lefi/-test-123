@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: last-one
+  labels:
+    app: last-one
 spec:
   replicas: 2
   selector:
@@ -12,11 +14,11 @@ spec:
       labels:
         app: last-one
       annotations:
-        redeploy-timestamp: '2025-05-27T18:51:43'
+        redeploy-timestamp: "2025-05-27T18:51:43"
     spec:
       containers:
         - name: last-one
-          image: bilel06/last-one:latest
+          image: bilel06/last-one:57
           imagePullPolicy: Always
           ports:
             - containerPort: 80

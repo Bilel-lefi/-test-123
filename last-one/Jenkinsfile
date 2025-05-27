@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'bilel06/last-one'
         DOCKER_CREDENTIALS_ID = 'dockerhub-creds'
-        GIT_USER = 'Bilel-lefi' 
+        GIT_USER = 'Bilel-lefi'
     }
 
     stages {
@@ -14,40 +14,37 @@ pipeline {
             }
         }
 
-        stage('Pull Docker Image') {
+        stage('Build and Tag Docker Image') {
             steps {
                 script {
-                    docker.image("${DOCKER_IMAGE}:latest").pull()
-                }
-            }
-        }
-
-        stage('Push Docker Image') {
-            steps {
-                script {
+                    def image = docker.build("${DOCKER_IMAGE}:${BUILD_NUMBER}")
                     docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
-                        docker.image("${DOCKER_IMAGE}:latest").push()
+                        image.push()
                     }
                 }
             }
         }
 
-        stage('Update redeploy-timestamp') {
+        stage('Update Manifest') {
             steps {
                 bat '''
-                    powershell -Command "$timestamp = Get-Date -Format 'yyyy-MM-ddTHH:mm:ss'; (Get-Content 'argocd\\manifests\\deployment.yaml') -replace 'redeploy-timestamp: \".*\"', \\"redeploy-timestamp: '$timestamp'\\" | Set-Content 'argocd\\manifests\\deployment.yaml'"
+                    powershell -Command "$ts = Get-Date -Format 'yyyy-MM-ddTHH:mm:ss';" ^
+                    "(Get-Content 'argocd\\manifests\\deployment.yaml') ^
+                    -replace 'redeploy-timestamp: \\".*\\"', \\"redeploy-timestamp: \\"$ts\\"\\" ^
+                    -replace 'image: bilel06/last-one:.*', \\"image: bilel06/last-one:%BUILD_NUMBER%\\"" ^
+                    | Set-Content 'argocd\\manifests\\deployment.yaml'"
                 '''
             }
         }
 
-        stage('Commit and Push Manifest Update') {
+        stage('Commit and Push Manifest') {
             steps {
                 withCredentials([string(credentialsId: 'github-pat-token', variable: 'GITHUB_TOKEN')]) {
                     bat '''
                         git config user.email "bilellefi06@gmail.com"
                         git config user.name "bilel"
                         git add argocd\\manifests\\deployment.yaml
-                        git commit -m "Update redeploy-timestamp for redeployment"
+                        git commit -m "Update image tag and redeploy timestamp"
                         git push https://%GIT_USER%:%GITHUB_TOKEN%@github.com/Bilel-lefi/-test-123.git master
                     '''
                 }
