@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'bilel06/last-one'
         DOCKER_CREDENTIALS_ID = 'dockerhub-creds'
-        GIT_USER = 'Bilel-lefi' // Ton nom d'utilisateur GitHub
+        GIT_USER = 'Bilel-lefi' 
     }
 
     stages {
