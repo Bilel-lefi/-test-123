@@ -28,15 +28,14 @@ pipeline {
         stage('Update Manifest') {
             steps {
                 bat '''
-                    powershell -Command "$ts = Get-Date -Format 'yyyy-MM-ddTHH:mm:ss';" ^
-                    "(Get-Content 'argocd\\manifests\\deployment.yaml') ^
-                    -replace 'redeploy-timestamp: \\".*\\"', \\"redeploy-timestamp: \\"$ts\\"\\" ^
-                    -replace 'image: bilel06/last-one:.*', \\"image: bilel06/last-one:%BUILD_NUMBER%\\"" ^
-                    | Set-Content 'argocd\\manifests\\deployment.yaml'"
+                    powershell -Command ^
+                    "$ts = Get-Date -Format 'yyyy-MM-ddTHH:mm:ss'; ^
+                    (Get-Content 'argocd\\manifests\\deployment.yaml') -replace 'redeploy-timestamp: \\".*\\"', 'redeploy-timestamp: \\'$ts\\'' -replace 'image: bilel06/last-one:.*', 'image: bilel06/last-one:${BUILD_NUMBER}' | Set-Content 'argocd\\manifests\\deployment.yaml'"
                 '''
             }
         }
 
+        // Décommente cette étape si tu veux automatiser le commit/push du manifest
         // stage('Commit and Push Manifest') {
         //     steps {
         //         withCredentials([string(credentialsId: 'github-pat-token', variable: 'GITHUB_TOKEN')]) {
